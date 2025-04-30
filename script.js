@@ -1,3 +1,13 @@
+
+const $ = document
+const wrapperElem = $.querySelector('.wrapper')
+const selectBtn = $.querySelector('.select-btn')
+const titleElem = $.querySelector('.select-btn span')
+const optionsContainer = $.querySelector('.options')
+const searchInputElem = $.querySelector('input')
+
+
+
 const countries = [
     "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda",
     "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain",
@@ -33,49 +43,16 @@ const countries = [
 
 
 
-const selectBtn = document.querySelector('.select-btn')
-const wrapper = document.querySelector('.wrapper')
-const optionsContainer = document.querySelector('.options')
-const inputElem = document.querySelector('input')
+selectBtn.addEventListener('click', () =>  {wrapperElem.classList.toggle('active')})
 
 
+const loadCountries = () => {
+    let li = null
 
+    countries.forEach((country, index) => {
+        li = `<li>${country}</li>` 
 
-
-
-const loadData = () => {
-
-    countries.forEach(country => {
-
-        optionsContainer.insertAdjacentHTML('beforeend',
-
-            `
-                <li>${country}</li>
-
-            `
-        )
-
-    })
-}
-
-
-const showOptions = () => {
-    wrapper.classList.toggle('active')
-}
-
-
-const searchHandler = () => {
-
-    const optionElements = document.querySelectorAll('.options li')
-
-    let value = inputElem.value.toLocaleLowerCase()
-
-    optionElements.forEach(option => {
-        if(!option.textContent.toLocaleLowerCase().includes(value)) {
-            option.style.display = 'none'
-        } else {
-            option.style.display = 'block'
-        }
+        optionsContainer.insertAdjacentHTML('beforeend', li)
     })
     
 }
@@ -83,15 +60,41 @@ const searchHandler = () => {
 
 optionsContainer.addEventListener('click', (event) => {
 
-    let selectedCountry = document.querySelector('.selected')
+    wrapperElem.classList.remove('active')
 
-    if(selectedCountry) selectedCountry.classList.remove('selected')
+    let selectedOption = $.querySelector('.selected')
 
+    if(selectedOption) selectedOption.classList.remove('selected')
     event.target.classList.add('selected')
-    selectBtn.querySelector('span').textContent = event.target.textContent
 
+    titleElem.textContent = event.target.textContent
+    
+    searchInputElem.value = ""
+
+    document.querySelectorAll('.options li').forEach(li => {
+        li.style.display = 'block';
+    });
 })
 
 
-selectBtn.addEventListener('click', showOptions)
-inputElem.addEventListener('input', searchHandler)
+searchInputElem.addEventListener('input', () => {
+
+
+    let countryElements = document.querySelectorAll('.options li')
+    let searchedcountry = searchInputElem.value.toLocaleLowerCase()
+
+    countryElements.forEach(country => {
+        if(!country.textContent.toLocaleLowerCase().includes(searchedcountry)) {
+            country.style.display = 'none'
+        } else {
+            country.style.display = 'block'
+        }
+    })
+
+    
+})
+
+
+
+
+window.addEventListener('load', loadCountries)
